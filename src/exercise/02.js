@@ -40,7 +40,7 @@ function PokemonInfo({pokemonName}) {
 
   // -------------------------- start --------------------------
 
-  const [state, dispatch] = React.useReducer(pokemonInfoReducer, {
+  const [ state, dispatch ] = React.useReducer(pokemonInfoReducer, {
     status: pokemonName ? 'pending' : 'idle',
     // 🐨 this will need to be "data" instead of "pokemon"
     pokemon: null,
@@ -69,7 +69,7 @@ function PokemonInfo({pokemonName}) {
     // 🐨 you'll accept dependencies as an array and pass that here.
     // 🐨 because of limitations with ESLint, you'll need to ignore
     // the react-hooks/exhaustive-deps rule. We'll fix this in an extra credit.
-  }, [pokemonName])
+  }, [ pokemonName ])
   // --------------------------- end ---------------------------
 
   // 🐨 here's how you'll use the new useAsync hook you're writing:
@@ -97,7 +97,7 @@ function PokemonInfo({pokemonName}) {
 }
 
 function App() {
-  const [pokemonName, setPokemonName] = React.useState('')
+  const [ pokemonName, setPokemonName ] = React.useState('')
 
   function handleSubmit(newPokemonName) {
     setPokemonName(newPokemonName)
@@ -112,7 +112,7 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonErrorBoundary onReset={handleReset} resetKeys={[pokemonName]}>
+        <PokemonErrorBoundary onReset={handleReset} resetKeys={[ pokemonName ]}>
           <PokemonInfo pokemonName={pokemonName} />
         </PokemonErrorBoundary>
       </div>
@@ -121,7 +121,7 @@ function App() {
 }
 
 function AppWithUnmountCheckbox() {
-  const [mountApp, setMountApp] = React.useState(true)
+  const [ mountApp, setMountApp ] = React.useState(true)
   return (
     <div>
       <label>

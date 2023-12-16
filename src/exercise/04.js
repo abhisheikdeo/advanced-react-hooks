@@ -25,7 +25,8 @@ function MessagesDisplay({messages}) {
 // this is to simulate major computation/big rendering tree/etc.
 function sleep(time = 0) {
   const wakeUpTime = Date.now() + time
-  while (Date.now() < wakeUpTime) {}
+  while (Date.now() < wakeUpTime) {
+  }
 }
 
 function SlooooowSibling() {
@@ -39,7 +40,7 @@ function SlooooowSibling() {
 }
 
 function App() {
-  const [messages, setMessages] = React.useState(allMessages.slice(0, 8))
+  const [ messages, setMessages ] = React.useState(allMessages.slice(0, 8))
   const addMessage = () =>
     messages.length < allMessages.length
       ? setMessages(allMessages.slice(0, messages.length + 1))

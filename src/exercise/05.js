@@ -35,7 +35,7 @@ function MessagesDisplay({messages}) {
 
 function App() {
   const messageDisplayRef = React.useRef()
-  const [messages, setMessages] = React.useState(allMessages.slice(0, 8))
+  const [ messages, setMessages ] = React.useState(allMessages.slice(0, 8))
   const addMessage = () =>
     messages.length < allMessages.length
       ? setMessages(allMessages.slice(0, messages.length + 1))

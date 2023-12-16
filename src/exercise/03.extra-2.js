@@ -37,7 +37,7 @@ function pokemonCacheReducer(state, action) {
 
 function PokemonInfo({pokemonName}) {
   // 💣 remove the useReducer here (or move it up to your PokemonCacheProvider)
-  const [cache, dispatch] = React.useReducer(pokemonCacheReducer, {})
+  const [ cache, dispatch ] = React.useReducer(pokemonCacheReducer, {})
   // 🐨 get the cache and dispatch from useContext with PokemonCacheContext
 
   const {data: pokemon, status, error, run, setData} = useAsync()
@@ -55,7 +55,7 @@ function PokemonInfo({pokemonName}) {
         }),
       )
     }
-  }, [cache, pokemonName, run, setData])
+  }, [ cache, pokemonName, run, setData ])
 
   if (status === 'idle') {
     return 'Submit a pokemon'
@@ -99,7 +99,7 @@ function PokemonSection({onSelect, pokemonName}) {
       <div className="pokemon-info" style={{marginLeft: 10}}>
         <PokemonErrorBoundary
           onReset={() => onSelect('')}
-          resetKeys={[pokemonName]}
+          resetKeys={[ pokemonName ]}
         >
           <PokemonInfo pokemonName={pokemonName} />
         </PokemonErrorBoundary>
@@ -109,7 +109,7 @@ function PokemonSection({onSelect, pokemonName}) {
 }
 
 function App() {
-  const [pokemonName, setPokemonName] = React.useState(null)
+  const [ pokemonName, setPokemonName ] = React.useState(null)
 
   function handleSubmit(newPokemonName) {
     setPokemonName(newPokemonName)
