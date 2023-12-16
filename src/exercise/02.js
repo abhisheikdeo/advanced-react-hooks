@@ -10,6 +10,24 @@ import {
   PokemonErrorBoundary,
 } from '../pokemon'
 
+function useSafeDispatch(dispatch) {
+  const mountedRef = React.useRef(false)
+
+  React.useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
+  return React.useCallback((...args) => {
+    if (!mountedRef.current) {
+      dispatch(...args)
+    }
+  }, [dispatch])
+
+}
+
 // 🐨 this is going to be our generic asyncReducer
 function asyncReducer(state, action) {
   switch (action.type) {
@@ -31,8 +49,8 @@ function asyncReducer(state, action) {
   }
 }
 
-function useAsync(asyncCallback, initialState, dependencies) {
-  const [ state, dispatch ] = React.useReducer(asyncReducer, {
+function useAsync(initialState) {
+  const [ state, unsafeDispatch ] = React.useReducer(asyncReducer, {
     status: 'idle',
     // 🐨 this will need to be "data" instead of "pokemon"
     data: null,
@@ -40,11 +58,9 @@ function useAsync(asyncCallback, initialState, dependencies) {
     ...initialState,
   })
 
-  React.useEffect(() => {
-    const promise = asyncCallback()
-    if (!promise) {
-      return
-    }
+  const dispatch = useSafeDispatch(unsafeDispatch)
+
+  const run = React.useCallback(promise => {
     dispatch({ type: 'pending' })
     promise.then(
       data => {
@@ -54,21 +70,27 @@ function useAsync(asyncCallback, initialState, dependencies) {
         dispatch({ type: 'rejected', error })
       },
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dependencies)
+  }, [dispatch])
 
-  return state
+  return { ...state, run }
 }
 
 function PokemonInfo({ pokemonName }) {
-  const state = useAsync(() => {
+  const {
+    data: pokemon,
+    status,
+    error,
+    run,
+  } = useAsync({ status: pokemonName ? 'pending' : 'idle' })
+
+  React.useEffect(() => {
     if (!pokemonName) {
       return
     }
-    return fetchPokemon(pokemonName)
-  }, { status: pokemonName ? 'pending' : 'idle' }, [ pokemonName ])
 
-  const { data, status, error } = state
+    const pokemonPromise = fetchPokemon(pokemonName)
+    run(pokemonPromise)
+  }, [ pokemonName, run ])
 
   switch (status) {
     case 'idle':
@@ -78,7 +100,7 @@ function PokemonInfo({ pokemonName }) {
     case 'rejected':
       throw error
     case 'resolved':
-      return <PokemonDataView pokemon={data} />
+      return <PokemonDataView pokemon={pokemon} />
     default:
       throw new Error('This should be impossible')
   }
